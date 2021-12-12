@@ -1,7 +1,8 @@
 import cv2 
-import os
 import glob
 import time
+from pathlib import Path
+
 class FileReader():
     def __init__(self, data_set_dir) -> None:
         """Class that has the task to read images that are located in the specified folder path.
@@ -68,8 +69,8 @@ class FileReader():
         rel_path : str
             The folder path
         """
-        if not os.path.isdir(rel_path):
-            os.mkdir(rel_path) 
+        if not Path.is_dir(rel_path):
+            Path.mkdir(rel_path) 
     def save_all_frames_for_one_video(self,relative_path_to_video):
         """Saves all frames for a video under a specific path that can be created.
 
@@ -82,9 +83,9 @@ class FileReader():
         #print(f"video_name = {video_name}")
         data_set_name = self.get_dataset_name_from_relative_path(relative_path_to_video)
         folder_name = self.create_img_path_from_data_set_name(data_set_name)
-        rel_data_set_path = os.path.join('data',folder_name )
+        rel_data_set_path = Path.join('data',folder_name )
         self.create_folder_if_not_exist(rel_data_set_path)
-        rel_path_dir = os.path.join(rel_data_set_path,video_name)
+        rel_path_dir = Path.join(rel_data_set_path,video_name)
         #print(f"rel_path_dir = {rel_path_dir}")
         self.create_folder_if_not_exist(rel_path_dir)
         # Keep iterating break
@@ -93,7 +94,7 @@ class FileReader():
         while True:
             ret, frame = cap.read()  # Read frame from first video
             if ret:
-                path_to_file = os.path.join(rel_path_dir,str(i) + '.jpg' )
+                path_to_file = Path.join(rel_path_dir,str(i) + '.jpg' )
                 cv2.imwrite(path_to_file , frame)  # Write frame to JPEG file (1.jpg, 2.jpg, ...)
                 cv2.imshow('frame', frame)  # Display frame for testing
                 i += 1 # Advance file counter
@@ -139,7 +140,7 @@ class FileReader():
         [str,...]
             A list of relative paths to the mp4 videos
         """
-        path = os.path.join(self.data_set_dir, ("*.mp4"))
+        path = Path.joinpath(Path(self.data_set_dir), ("*.mp4"))
         videos_ls = glob.glob(str(path))
         return videos_ls
     
