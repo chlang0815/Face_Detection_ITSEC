@@ -4,7 +4,8 @@ import time
 from pathlib import Path
 
 
-class FileReader:
+class FileReader():
+
     def __init__(self, data_set_dir) -> None:
         """Class that has the task to read images that are located in the specified folder path.
 
@@ -16,6 +17,7 @@ class FileReader:
         self.data_set_dir = data_set_dir
 
     def get_video_name_from_relative_path(self, relative_path_to_video):
+
         """Returns the video name from the relative path.Returns the video name from the relative path.
         For relative_path_to_video="./data/Celeb-real/id0_0002.mp4" the video_name would be =id0_0002.
 
@@ -31,7 +33,9 @@ class FileReader:
         """
         return relative_path_to_video.split("/")[-1].split(".")[0]
 
+
     def get_dataset_name_from_relative_path(self, relative_path_to_video):
+
         """Returns the dataset from the relative path.
         For relative_path_to_video="./data/Celeb-real/id0_0002.mp4" the data_set_name would be = Celeb-real.
 
@@ -47,7 +51,9 @@ class FileReader:
         """
         return relative_path_to_video.split("/")[-2]
 
+
     def create_img_path_from_data_set_name(self, data_set_name):
+
         """Adds a prefix to the data set name and returns it.
 
         Parameters
@@ -60,7 +66,9 @@ class FileReader:
         str
             The new dat set name
         """
+
         return "IMG_" + data_set_name
+
 
     def create_folder_if_not_exist(self, rel_path):
         """Creates a folder if no folder exists at rel_path.
@@ -74,6 +82,7 @@ class FileReader:
             Path.mkdir(rel_path)
 
     def save_all_frames_for_one_video(self, relative_path_to_video):
+
         """Saves all frames for a video under a specific path that can be created.
 
         Parameters
@@ -82,6 +91,7 @@ class FileReader:
             The relative path to the video
         """
         video_name = self.get_video_name_from_relative_path(relative_path_to_video)
+
         # print(f"video_name = {video_name}")
         data_set_name = self.get_dataset_name_from_relative_path(relative_path_to_video)
         folder_name = self.create_img_path_from_data_set_name(data_set_name)
@@ -89,6 +99,7 @@ class FileReader:
         self.create_folder_if_not_exist(rel_data_set_path)
         rel_path_dir = Path.joinpath(Path(rel_data_set_path), video_name)
         # print(f"rel_path_dir = {rel_path_dir}")
+
         self.create_folder_if_not_exist(rel_path_dir)
         # Keep iterating break
         cap = cv2.VideoCapture(relative_path_to_video)
@@ -96,12 +107,14 @@ class FileReader:
         while True:
             ret, frame = cap.read()  # Read frame from first video
             if ret:
+
                 path_to_file = Path.joinpath(Path(rel_path_dir), str(i) + ".jpg")
                 cv2.imwrite(
                     str(path_to_file), frame
                 )  # Write frame to JPEG file (1.jpg, 2.jpg, ...)
                 cv2.imshow("frame", frame)  # Display frame for testing
                 i += 1  # Advance file counter
+
             else:
                 # Break the interal loop when res status is False.
                 break
@@ -111,6 +124,7 @@ class FileReader:
         cap.release()  # Release must be inside the outer loop
 
     def read_all_frames_for_one_video(self, relative_path_to_video):
+
         """Read all frames of a video under a specific path that can be created.
 
         Parameters
@@ -157,21 +171,22 @@ class FileReader:
             A dictonary containing the videos as keys and a generator as values
         """
         v_ls = self.read_all_video_files_for_data_set_dir()
-        v_f_dic = {video: self.read_all_frames_for_one_video(video) for video in v_ls}
+        v_f_dic = {video : self.read_all_frames_for_one_video(video) for video in v_ls}
         return v_f_dic
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     rel_path_video = "./data/Celeb-real/id0_0002.mp4"
     data_set_celb_real_dir = "./data/Celeb-real"
 
-    # extract_multiple_videos(rel_path_video)
-    # save_all_frames_for_one_video(rel_path_video)
-    # raffov = read_all_frames_for_one_video(rel_path_video)
-    # print(next(raffov))
+    #extract_multiple_videos(rel_path_video)
+    #save_all_frames_for_one_video(rel_path_video)
+    #raffov = read_all_frames_for_one_video(rel_path_video)
+    #print(next(raffov))
     fr = FileReader(data_set_celb_real_dir)
     v_f_dic = fr.read_all_frames_for_all_videos()
+    print(v_f_dic)
+    #video_0 = list(v_f_dic.keys())[0]
 
-    video_0 = list(v_f_dic.keys())[0]
-    # print(video_0)
-    # print([x for x in v_f_dic[video_0]])
+    #print(video_0)
+    #print([x for x in v_f_dic[video_0]])
+
