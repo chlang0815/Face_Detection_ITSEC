@@ -47,6 +47,7 @@ class FaceClassifier():
         """
         grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         return self.classifier.detectMultiScale(grey_img, self.scaleFactor, self.minNeighbors)
+        
 if __name__ == "__main__":
     x= cv2.CascadeClassifier(cv2.data.haarcascades + '/haarcascade_frontalface_default.xml')
     print(type(x))

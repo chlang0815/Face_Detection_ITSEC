@@ -15,7 +15,6 @@ class FaceClassifier():
         """
 
         self.shape = "shape_predictor_68_face_landmarks.dat"
-
         self.detector = dlib.get_frontal_face_detector()
         self.predictor = dlib.shape_predictor(self.shape)
 
@@ -51,6 +50,7 @@ class FaceClassifier():
 
         # Return the list of (x,y) coordinates:
         return coordinates
+        
     
     def calc_lm_ls_for_img(self, img):
         """Creates the bounding box list for an img. 
@@ -67,7 +67,7 @@ class FaceClassifier():
         """
         grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         rects = self.detector(grey_img, 0)
-        
+
         shape = []
         for (i, rect) in enumerate(rects):
               shape.append(self.shape_to_np(self.predictor(grey_img, rect)))

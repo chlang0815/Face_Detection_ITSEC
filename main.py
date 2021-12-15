@@ -46,8 +46,9 @@ class HaarCascade():
 
 
 class SixtyEightLandmarks():
-    def __init__(self, data_set_path="./data/Celeb-real", number_of_videos = 1) -> None:
+    def __init__(self, data_set_path="./data/Celeb-real", rel_path_to_write = "./results/Celeb-real", number_of_videos = 1) -> None:
         self.data_set_path = data_set_path
+        self.rel_path_to_write = rel_path_to_write
         self.number_of_videos = number_of_videos
         self.fr = file_reader.FileReader(data_set_path)
         self.landmarks_classifier = landmarks.FaceClassifier()
@@ -74,21 +75,28 @@ class SixtyEightLandmarks():
         dic_keys = list(self.vl_dic.keys())[:self.number_of_videos]
         for video in dic_keys:
             video_results[video] = self.perform_landmark_for_gen(self.vl_dic[video])
-        with open('68landmarks.txt', 'w') as f:
-            print(video_results, file=f)
         return video_results
+
+    def write_the_results(self):
+        rw = result_writer.ResultWriter(self.rel_path_to_write)
+        rw.write_results_to_path(self.landmarks_classifier_result_dic)
+
 
 
 if __name__ == '__main__':
-    rel_path_video = "data/Celeb-real/id23_0006.mp4"
+    rel_path_video = "data/Celeb-real/id0_0000.mp4"
     data_set_celb_real_dir = "./data/Celeb-real"
     rel_path_to_write ="./results/Celeb-real"
-    hcr = HaarCascade(data_set_celb_real_dir,rel_path_to_write)
-    draw = drawer.HaarCascadeDrawer(hcr.fr,hcr.haar_cascade_classifier_result_dic, color=(0,0,255))
+    lr = SixtyEightLandmarks()
+    draw = drawer.LandmarkDrawer(lr.fr,lr.landmarks_classifier_result_dic, color=(0,255,100))
     test_img = draw.draw_bounding_box_to_img(rel_path_video,0)
+    #dic = lr.landmarks_classifier_result_dic
+    #lr.write_the_results()
     draw.show_img(test_img)
-    #dic = hcr.haar_cascade_classifier_result_dic
-    #hcr.write_the_results()
+    """hcr = HaarCascade(data_set_celb_real_dir,rel_path_to_write)
+    draw = drawer.HaarCascadeDrawer(hcr.fr,hcr.haar_cascade_classifier_result_dic, color=(255,0,255))
+    test_img = draw.draw_bounding_box_to_img(rel_path_video,0)
+    draw.show_img(test_img) """
     #video_0 = list(hcr.vl_dic.keys())[0]
     #video_0_gen= hcr.vl_dic[video_0]
     #for x in video_0_gen:

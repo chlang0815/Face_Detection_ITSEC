@@ -36,7 +36,8 @@ class Drawer():
         [[int, ...], ...]
             Returns the result as a list. The return type depends on the selected method. But it is always a list which should contain a list or multiples list .
         """
-        video = self.result_dic[rel_path_to_video]
+
+        video = self.result_dic[str(Path(rel_path_to_video))]
         return video[frame]
     
     def read_specific_frame_for_video(self, rel_path_to_video, frame):
@@ -120,3 +121,50 @@ class HaarCascadeDrawer(Drawer):
             bb_img = cv2.rectangle(bb_img, (x, y),( x + w, y + h), self.color)
             bb_img = cv2.putText(bb_img,f"[{x},{y},{w},{h}]",org = ((x, y + h + 20)),fontFace=self.font, fontScale =self.fontScale,color = self.color)
         return bb_img
+
+class LandmarkDrawer(Drawer):
+    
+    def __init__(self,fr,result_dic, color = (0,0,255)) -> None:
+        """Class for drawing the specified result dictonary. Moreover, special functionality for the Haar cascade drawings.
+
+        Parameters
+        ----------
+        fr : obj
+            The instance of the file reader class
+        result_dic : dic
+            Result dictonary that should contain videos as key and dictonarys as values. These dictonarys should contain the frame number as the key and the list containing a/multiple list/s of four numbers as the values.
+            For example { video: {frame : [[int, int, int, int], ...]}}
+        color : tuple, optional
+            The color value. Each integer should be in the range of 0 to 255, by default (0,0,255)
+        """
+        super().__init__(fr,result_dic, color)
+
+        self.fontScale =0.75
+        self.font =cv2.FONT_HERSHEY_SIMPLEX
+    
+    def draw_bounding_box_to_img(self, rel_path_to_video, frame):
+        """Draws a bouning to the image and returns it.
+
+        Parameters
+        ----------
+        rel_path_to_video : str
+            The relative path to the video.
+        frame : int
+            The frame number.
+
+        Returns
+        -------
+        np.ndarray
+            The image
+        """
+        result_ls = self.return_result_for_video_and_frame(rel_path_to_video, frame)
+        img = self.read_specific_frame_for_video(rel_path_to_video, frame)
+        bb_img = img
+        print(result_ls)
+        print("IMG_shape:",img.shape)
+        for face in result_ls:
+            for point in face:
+                bb_img = cv2.circle(bb_img, point, 2, self.color, 1)
+
+        return bb_img
+
