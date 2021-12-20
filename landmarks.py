@@ -3,7 +3,7 @@ import dlib
 import numpy as np
 
 class FaceClassifier():
-    def __init__(self):
+    def __init__(self, shape = "shape_predictor_68_face_landmarks.dat"):
         """Can create the 68Landmarks classifier
 
         Parameters
@@ -14,7 +14,7 @@ class FaceClassifier():
             Describes the numbers of minimum Neighbours for the method detectMultiscaleGray of OpenCV
         """
 
-        self.shape = "shape_predictor_68_face_landmarks.dat"
+        self.shape = shape
         self.detector = dlib.get_frontal_face_detector()
         self.predictor = dlib.shape_predictor(self.shape)
 
@@ -52,13 +52,15 @@ class FaceClassifier():
         return coordinates
         
     
-    def calc_lm_ls_for_img(self, img):
+    def calc_lm_ls_for_img(self, img, flag_shape = True ):
         """Creates the bounding box list for an img. 
 
         Parameters
         ----------
         img : np.ndarray
             The image on which the classifier should be applied.
+        flag_shape : bool, optional
+            [description], by default True
 
         Returns
         -------
@@ -71,8 +73,10 @@ class FaceClassifier():
         shape = []
         for (i, rect) in enumerate(rects):
               shape.append(self.shape_to_np(self.predictor(grey_img, rect)))
-
-        return shape
+        if(flag_shape):
+            return shape
+        else: 
+            return rects
         
 if __name__ == "__main__":
     x= cv2.CascadeClassifier(cv2.data.haarcascades + '/haarcascade_frontalface_default.xml')
