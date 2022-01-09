@@ -42,7 +42,16 @@ class ResultWriter():
                 for result in result_ls:
                     rdw.write(f"{result}\n")
         rdw.close()
-        
+    def write_down_the_time_dic(self,time_dictonary):
+        write_path = Path.joinpath(self.rel_path_to_results,'result_time_dictonary.txt')
+        rdw = open(write_path,"a+")
+        for video, frame in time_dictonary.items():
+            rdw.write(f"video={video}\n")
+            for fr,frame_time in frame.items():
+                rdw.write(f"{fr} = {frame_time}\n")
+
+        rdw.close()
+       
     def write_down_hit_and_no_hit_file(self,dictonary):
         """Creates the results for the dictonary and writes them to a specific file in rel_path_to_results.
         The specific files are hit_file.txt, no_file.txt, eval.txt, and detailed_eval_file.txt
