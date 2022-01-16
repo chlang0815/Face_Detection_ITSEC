@@ -46,13 +46,13 @@ class ResultWriter():
         write_path = Path.joinpath(self.rel_path_to_results,'result_time_dictonary.txt')
         rdw = open(write_path,"a+")
         for video, frame in time_dictonary.items():
-            rdw.write(f"video={video}\n")
+            #rdw.write(f"video={video}\n")
             for fr,frame_time in frame.items():
-                rdw.write(f"{fr} = {frame_time}\n")
+                rdw.write(f"{video} = {frame_time}\n")
 
         rdw.close()
        
-    def write_down_hit_and_no_hit_file(self,dictonary):
+    def write_down_hit_and_no_hit_file(self,dictonary,hit_file_bool = False):
         """Creates the results for the dictonary and writes them to a specific file in rel_path_to_results.
         The specific files are hit_file.txt, no_file.txt, eval.txt, and detailed_eval_file.txt
         hit_file.txt: Contains all the hits ( A hit is defined as the detection of only one result in the frame.)
@@ -68,13 +68,15 @@ class ResultWriter():
             frame: the current frame 
             resultlist: the list of the result/s of the current frame
         """
+        
         write_path_hf = Path.joinpath(self.rel_path_to_results,'hit_file.txt')
         write_path_nhf = Path.joinpath(self.rel_path_to_results,'no_hit_file.txt')
         write_path_ef = Path.joinpath(self.rel_path_to_results,'eval_file.txt')
         write_path_devf = Path.joinpath(self.rel_path_to_results,'detailed_eval_file.txt')
         counter_hit = 0
         counter_no_hit = 0
-        hf = open( write_path_hf, "a+")
+        if(hit_file_bool):
+            hf = open( write_path_hf, "a+")
         nhf = open( write_path_nhf, "a+")
         ef = open( write_path_ef, "a+")
         devf = open(write_path_devf, "a+")
@@ -84,7 +86,8 @@ class ResultWriter():
             for frame_number, result_ls in frame.items():
                 len_results = len(result_ls)
                 if (len_results == 1):
-                    hf.write(f"video:{video};frame_number:{frame_number};result:{result_ls[0]}\n")
+                    if(hit_file_bool):
+                        hf.write(f"video:{video};frame_number:{frame_number};result:{result_ls[0]}\n")
                     counter_hit += 1
                     counter_hit_per_video += 1 
 
@@ -100,10 +103,11 @@ class ResultWriter():
             detailed_eval_video_str = f"video:{video};counter_hit_per_video:{counter_hit_per_video};counter_no_hit_per_video:{counter_no_hit_per_video};number_of_frames:{len(frame)}\n"
             devf.write(detailed_eval_video_str)
         ef.write(f"counter_no_hit ={counter_no_hit}, counter_hit = {counter_hit}")
-        hf.close()
+        if(hit_file_bool):
+            hf.close()
         nhf.close()
         ef.close()
-    def write_results_to_path(self, dictonary):
+    def write_results_to_path(self, dictonary,result_dic_bool=False):
         """Calls all the write functions.
 
         Parameters
@@ -115,7 +119,8 @@ class ResultWriter():
             resultlist: the list of the result/s of the current frame
         """
         self.create_folder_if_not_exist(self.rel_path_to_results)
-        self.write_down_the_dic(dictonary)
+        if(result_dic_bool):
+            self.write_down_the_dic(dictonary)
         self.write_down_hit_and_no_hit_file(dictonary)
 
 

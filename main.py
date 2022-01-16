@@ -6,7 +6,6 @@ import time
 import drawer
 import result_writer
 
-
 def read_specific_frame_for_video(file_reader, rel_path_to_video, frame):
     """Returns an img for the specified video and frame.
 
@@ -31,8 +30,9 @@ def read_specific_frame_for_video(file_reader, rel_path_to_video, frame):
         f_i += 1
         return frame
 
+
 class HaarCascade():
-    def __init__(self,data_set_path="./data/Celeb-real",rel_path_to_write = "./results/Celeb-real", scaleFactor = 1.3, minNeighbors = 5, number_of_videos = 10) -> None:
+    def __init__(self, rel_path_to_write,data_set_path, scaleFactor = 1.3, minNeighbors = 5, number_of_videos = 10) -> None:
         self.data_set_path = data_set_path
         self.rel_path_to_write = rel_path_to_write
         self.scaleFactor = scaleFactor
@@ -97,8 +97,9 @@ class HaarCascade():
         rw.write_down_the_time_dic(self.haar_cascade_classifier_time_result_dic)
 
 
+
 class Landmarks():
-    def __init__(self, data_set_path="./data/Celeb-real", rel_path_to_write = "./results/Celeb-real", number_of_videos = 1, path_to_predictor= "shape_predictor_68_face_landmarks.dat" ,flag_shape = True ) -> None:
+    def __init__(self, rel_path_to_write,data_set_path , number_of_videos = 1, path_to_predictor= "shape_predictor_68_face_landmarks.dat" ,flag_shape = True ) -> None:
         self.data_set_path = data_set_path
         self.rel_path_to_write = rel_path_to_write
         self.number_of_videos = number_of_videos
@@ -157,7 +158,6 @@ class Landmarks():
         else:
             for video in dic_keys:
                 video_results[video],video_time_results[video]  = self.perform_landmark_for_gen_without_time_frame(self.vl_dic[video])
-
         return video_results, video_time_results
 
     def write_the_results(self):
@@ -165,34 +165,39 @@ class Landmarks():
         rw.write_results_to_path(self.landmarks_classifier_result_dic)
         rw.write_down_the_time_dic(self.landmarks_classifier_time_result_dic)
 
+def run(data_set_name, number_of_videos, bb_bool):
+    data_path = f"./data/{data_set_name}"
+    rel_path_to_write_5 =f"./results/landmark5/{data_set_name}"
+    rel_path_to_write_68 =f"./results/landmark68/{data_set_name}"
+    rel_path_to_write_haar_cascade =f"./results/haarcascade/{data_set_name}"
+    lr = Landmarks(rel_path_to_write_68,data_path,flag_shape=bb_bool,number_of_videos=number_of_videos)
+    lr_5 = Landmarks(rel_path_to_write_5,data_path,path_to_predictor="shape_predictor_5_face_landmarks.dat",flag_shape=bb_bool,number_of_videos=number_of_videos)
+    hc = HaarCascade(rel_path_to_write_haar_cascade,data_path,number_of_videos=number_of_videos)
+    lr.write_the_results()
+    lr_5.write_the_results()
+    hc.write_the_results()
 
 if __name__ == '__main__':
-    rel_path_video = 'data/Celeb-real/id23_0006.mp4'
+
+    """     rel_path_video = 'data/Celeb-real/id23_0006.mp4'
     data_set_celb_real_dir = "./data/Celeb-real"
     rel_path_to_write ="./results/Celeb-real"
-    bb_bool = True
-    number_of_videos = 2
+    bb_bool = True """
+    NUMBER_OF_VIDEOS = 2
+    DATA_SET_NAME = 'Celeb-real'
+    BB_BOOL = False
+    
+    run(DATA_SET_NAME, NUMBER_OF_VIDEOS, BB_BOOL)
+    #draw_5 = drawer.LandmarkDrawer(lr_5.landmarks_classifier_result_dic, color=(255,0,0),flag_shape=bb_bool)
+    #draw_hc = drawer.HaarCascadeDrawer(hc.haar_cascade_classifier_result_dic, color=(0,0,250))
+    #draw = drawer.LandmarkDrawer(lr.landmarks_classifier_result_dic, color=(0,255,100),flag_shape=bb_bool)
 
-    lr = Landmarks(flag_shape=bb_bool,number_of_videos=number_of_videos)
-    lr_5 = Landmarks(path_to_predictor="shape_predictor_5_face_landmarks.dat",flag_shape=bb_bool,number_of_videos=number_of_videos)
-    hc = HaarCascade(number_of_videos=number_of_videos)
-    draw_5 = drawer.LandmarkDrawer(lr_5.landmarks_classifier_result_dic, color=(255,0,0),flag_shape=bb_bool)
-    draw_hc = drawer.HaarCascadeDrawer(hc.haar_cascade_classifier_result_dic, color=(0,0,250))
-    draw = drawer.LandmarkDrawer(lr.landmarks_classifier_result_dic, color=(0,255,100),flag_shape=bb_bool)
-
-    print(lr.landmarks_classifier_result_dic.keys())
+    """ print(lr.landmarks_classifier_result_dic.keys())
     img = read_specific_frame_for_video(hc.fr,rel_path_video,frame=0)
     img = draw.draw_bounding_box_to_img(rel_path_video,0, img)
     img = draw_5.draw_bounding_box_to_img(rel_path_video,0, img)
-    img = draw_hc.draw_bounding_box_to_img(rel_path_video,0, img)
-    #dic = lr.landmarks_classifier_result_dic
-    lr.write_the_results()
-    #hc.write_the_results()
+    img = draw_hc.draw_bounding_box_to_img(rel_path_video,0, img) """
     #draw_hc.show_img(img)
-    """hcr = HaarCascade(data_set_celb_real_dir,rel_path_to_write)
-    draw = drawer.HaarCascadeDrawer(hcr.fr,hcr.haar_cascade_classifier_result_dic, color=(255,0,255))
-    test_img = draw.draw_bounding_box_to_img(rel_path_video,0)
-    draw.show_img(test_img) """
     #video_0 = list(hcr.vl_dic.keys())[0]
     #video_0_gen= hcr.vl_dic[video_0]
     #for x in video_0_gen:
