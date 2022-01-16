@@ -6,6 +6,7 @@ import time
 import drawer
 import result_writer
 
+
 def read_specific_frame_for_video(file_reader, rel_path_to_video, frame):
     """Returns an img for the specified video and frame.
 
@@ -29,7 +30,6 @@ def read_specific_frame_for_video(file_reader, rel_path_to_video, frame):
         frame = next(frame_gen)
         f_i += 1
         return frame
-
 
 class HaarCascade():
     def __init__(self,data_set_path="./data/Celeb-real",rel_path_to_write = "./results/Celeb-real", scaleFactor = 1.3, minNeighbors = 5, number_of_videos = 10) -> None:
@@ -95,7 +95,6 @@ class HaarCascade():
         rw = result_writer.ResultWriter(self.rel_path_to_write)
         rw.write_results_to_path(self.haar_cascade_classifier_result_dic)
         rw.write_down_the_time_dic(self.haar_cascade_classifier_time_result_dic)
-
 
 
 class Landmarks():
@@ -165,7 +164,6 @@ class Landmarks():
         rw = result_writer.ResultWriter(self.rel_path_to_write)
         rw.write_results_to_path(self.landmarks_classifier_result_dic)
         rw.write_down_the_time_dic(self.landmarks_classifier_time_result_dic)
-
 
 
 if __name__ == '__main__':
