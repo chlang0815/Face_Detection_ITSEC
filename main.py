@@ -5,8 +5,9 @@ import time
 import drawer
 import result_writer
 
+
 class HaarCascade():
-    def __init__(self,data_set_path="./data/Celeb-real",rel_path_to_write = "./results/Celeb-real", scaleFactor = 1.3, minNeighbors = 5, number_of_videos = 2) -> None:
+    def __init__(self,data_set_path="./data/Celeb-real",rel_path_to_write = "./results/Celeb-real", scaleFactor = 1.3, minNeighbors = 5, number_of_videos = 1) -> None:
 
         self.data_set_path = data_set_path
         self.rel_path_to_write = rel_path_to_write
@@ -46,7 +47,7 @@ class HaarCascade():
 
 
 class SixtyEightLandmarks():
-    def __init__(self, data_set_path="./data/Celeb-real", rel_path_to_write = "./results/Celeb-real", number_of_videos = 1) -> None:
+    def __init__(self, data_set_path="./data/Celeb-synthesis", rel_path_to_write = "./results/Celeb-real", number_of_videos = 1) -> None:
         self.data_set_path = data_set_path
         self.rel_path_to_write = rel_path_to_write
         self.number_of_videos = number_of_videos
@@ -80,7 +81,6 @@ class SixtyEightLandmarks():
     def write_the_results(self):
         rw = result_writer.ResultWriter(self.rel_path_to_write)
         rw.write_results_to_path(self.landmarks_classifier_result_dic)
-
 
 
 if __name__ == '__main__':

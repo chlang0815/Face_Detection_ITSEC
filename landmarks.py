@@ -14,7 +14,7 @@ class FaceClassifier():
             Describes the numbers of minimum Neighbours for the method detectMultiscaleGray of OpenCV
         """
 
-        self.shape = "shape_predictor_68_face_landmarks.dat"
+        self.shape = "shape_predictor_5_face_landmarks.dat"
         self.detector = dlib.get_frontal_face_detector()
         self.predictor = dlib.shape_predictor(self.shape)
 

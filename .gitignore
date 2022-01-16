@@ -3,3 +3,5 @@ __pycache__/
 .venv
 .vscode
 results/*
+68landmarks.txt
+data-rescaled/*

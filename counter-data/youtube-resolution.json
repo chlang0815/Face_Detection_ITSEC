@@ -1,0 +1,37 @@
+[
+    {
+        "resolution": "(892.0, 500.0)",
+        "ar": 1.784,
+        "number_of_videos": 199
+    },
+    {
+        "resolution": "(888.0, 500.0)",
+        "ar": 1.776,
+        "number_of_videos": 50
+    },
+    {
+        "resolution": "(856.0, 478.0)",
+        "ar": 1.790794979079498,
+        "number_of_videos": 29
+    },
+    {
+        "resolution": "(782.0, 440.0)",
+        "ar": 1.7772727272727273,
+        "number_of_videos": 11
+    },
+    {
+        "resolution": "(844.0, 470.0)",
+        "ar": 1.7957446808510638,
+        "number_of_videos": 5
+    },
+    {
+        "resolution": "(818.0, 456.0)",
+        "ar": 1.793859649122807,
+        "number_of_videos": 3
+    },
+    {
+        "resolution": "(900.0, 496.0)",
+        "ar": 1.814516129032258,
+        "number_of_videos": 1
+    }
+]
