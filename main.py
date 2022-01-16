@@ -32,46 +32,52 @@ def read_specific_frame_for_video(file_reader, rel_path_to_video, frame):
 
 class HaarCascade():
     def __init__(self,data_set_path="./data/Celeb-real",rel_path_to_write = "./results/Celeb-real", scaleFactor = 1.3, minNeighbors = 5, number_of_videos = 10) -> None:
-
         self.data_set_path = data_set_path
         self.rel_path_to_write = rel_path_to_write
         self.scaleFactor = scaleFactor
+        self.HaarCascadeTimeDic={}
         self.minNeighbors = minNeighbors
         self.number_of_videos = number_of_videos
         self.fr = file_reader.FileReader(data_set_path)
         self.haar_cascade_classifier = haar_cascade.FaceClassifier(scaleFactor,minNeighbors)
         self.vl_dic = self.create_video_dic()
-        self.haar_cascade_classifier_result_dic= self.perform_haar_cascade_on_videos()
+        self.haar_cascade_classifier_result_dic, self.haar_cascade_classifier_time_result_dic= self.perform_haar_cascade_on_videos()
 
     def create_video_dic(self):
         return self.fr.read_all_frames_for_all_videos()
 
     def perform_haar_cascade_for_gen(self,frame_gen):
         frame_dic = {}
+        frame_time_dic ={}
         frame_i = 0
-        start_time = time.time()
+        start_video_time = time.time()
         for frame in frame_gen:
+            start_frame_time = time.time()
             frame_dic[frame_i] = self.perfrom_haar_cascade_for_img(frame)
+            end_frame_time = time.time()
+            finish_frame_time = end_frame_time - start_frame_time
+            frame_time_dic[frame_i] =  finish_frame_time
             frame_i += 1
-        
-        end_time = time.time()
-        finish_time = end_time - start_time
-        print(f"Haar_cascade= {finish_time}, total_frames = {frame_i}")
-        return frame_dic
+        end_video_time = time.time()
+        finish_video_time = end_video_time - start_video_time
+        frame_time_dic['finish_video_time'] = finish_video_time
+        return frame_dic,frame_time_dic
 
     def perfrom_haar_cascade_for_img(self,img):
         return self.haar_cascade_classifier.calc_bb_ls_for_img(img)
 
     def perform_haar_cascade_on_videos(self):
         video_results={}
+        video_time_results ={}
         dic_keys = list(self.vl_dic.keys())[:self.number_of_videos]
         for video in dic_keys:
-            video_results[video] = self.perform_haar_cascade_for_gen(self.vl_dic[video])
-        return video_results
+            video_results[video],video_time_results[video] = self.perform_haar_cascade_for_gen(self.vl_dic[video])
+        return video_results, video_time_results
       
     def write_the_results(self):
         rw = result_writer.ResultWriter(self.rel_path_to_write)
         rw.write_results_to_path(self.haar_cascade_classifier_result_dic)
+        rw.write_down_the_time_dic(self.haar_cascade_classifier_time_result_dic)
 
 
 
@@ -85,7 +91,7 @@ class Landmarks():
         self.fr = file_reader.FileReader(data_set_path)
         self.landmarks_classifier = landmarks.FaceClassifier(path_to_predictor)
         self.vl_dic = self.create_video_dic()
-        self.landmarks_classifier_result_dic= self.perform_landmark_on_videos()
+        self.landmarks_classifier_result_dic, self.landmarks_classifier_time_result_dic = self.perform_landmark_on_videos()
         
 
     def create_video_dic(self):
@@ -93,21 +99,25 @@ class Landmarks():
 
     def perform_landmark_for_gen(self,frame_gen):
         frame_dic = {}
+        frame_time_dic ={}
         frame_i = 0
         if(self.path_to_predictor == "shape_predictor_68_face_landmarks.dat"):
             det_str = "68_landmarks"
         else:
             det_str = "5_landmarks"
-        start_time = time.time()
-        
+        start_video_time = time.time()
         for frame in frame_gen:
+            start_frame_time = time.time()
             frame_dic[frame_i] = self.perfrom_landmark_for_img(frame)
+            end_frame_time = time.time()
+            finish_frame_time = end_frame_time - start_frame_time
+            frame_time_dic[frame_i] =  finish_frame_time
             frame_i += 1
         
-        end_time = time.time()
-        finish_time = end_time - start_time
-        print(f"{det_str}= {finish_time}, total_frames = {frame_i}")
-        return frame_dic
+        end_video_time = time.time()
+        finish_video_time = end_video_time - start_video_time
+        frame_time_dic['finish_video_time'] = finish_video_time
+        return frame_dic,frame_time_dic
 
 
     def perfrom_landmark_for_img(self,img):
@@ -115,14 +125,16 @@ class Landmarks():
 
     def perform_landmark_on_videos(self):
         video_results={}
+        video_time_results ={}
         dic_keys = list(self.vl_dic.keys())[:self.number_of_videos]
         for video in dic_keys:
-            video_results[video] = self.perform_landmark_for_gen(self.vl_dic[video])
-        return video_results
+            video_results[video],video_time_results[video]  = self.perform_landmark_for_gen(self.vl_dic[video])
+        return video_results, video_time_results
 
     def write_the_results(self):
         rw = result_writer.ResultWriter(self.rel_path_to_write)
         rw.write_results_to_path(self.landmarks_classifier_result_dic)
+        rw.write_down_the_time_dic(self.landmarks_classifier_time_result_dic)
 
 
 
@@ -146,8 +158,9 @@ if __name__ == '__main__':
     img = draw_5.draw_bounding_box_to_img(rel_path_video,0, img)
     img = draw_hc.draw_bounding_box_to_img(rel_path_video,0, img)
     #dic = lr.landmarks_classifier_result_dic
-    #lr.write_the_results()
-    draw_hc.show_img(img)
+    lr.write_the_results()
+    #hc.write_the_results()
+    #draw_hc.show_img(img)
     """hcr = HaarCascade(data_set_celb_real_dir,rel_path_to_write)
     draw = drawer.HaarCascadeDrawer(hcr.fr,hcr.haar_cascade_classifier_result_dic, color=(255,0,255))
     test_img = draw.draw_bounding_box_to_img(rel_path_video,0)
