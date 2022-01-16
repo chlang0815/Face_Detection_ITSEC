@@ -1,3 +1,4 @@
+from pickle import TRUE
 import file_reader
 import haar_cascade
 import landmarks
@@ -62,16 +63,32 @@ class HaarCascade():
         finish_video_time = end_video_time - start_video_time
         frame_time_dic['finish_video_time'] = finish_video_time
         return frame_dic,frame_time_dic
-
+    def perform_haar_cascade_for_gen_without_frame_time(self,frame_gen):
+        frame_dic = {}
+        frame_time_dic ={}
+        frame_i = 0
+        start_video_time = time.time()
+        for frame in frame_gen:
+            frame_dic[frame_i] = self.perfrom_haar_cascade_for_img(frame)
+            frame_i += 1
+        end_video_time = time.time()
+        finish_video_time = end_video_time - start_video_time
+        frame_time_dic['finish_video_time'] = finish_video_time
+        return frame_dic,frame_time_dic
     def perfrom_haar_cascade_for_img(self,img):
         return self.haar_cascade_classifier.calc_bb_ls_for_img(img)
 
-    def perform_haar_cascade_on_videos(self):
+    def perform_haar_cascade_on_videos(self, without_frame_time =TRUE):
         video_results={}
         video_time_results ={}
         dic_keys = list(self.vl_dic.keys())[:self.number_of_videos]
-        for video in dic_keys:
-            video_results[video],video_time_results[video] = self.perform_haar_cascade_for_gen(self.vl_dic[video])
+        if not without_frame_time:
+            for video in dic_keys:
+                video_results[video],video_time_results[video] = self.perform_haar_cascade_for_gen(self.vl_dic[video])
+        else:
+            for video in dic_keys:
+                video_results[video],video_time_results[video] = self.perform_haar_cascade_for_gen_without_frame_time(self.vl_dic[video])
+
         return video_results, video_time_results
       
     def write_the_results(self):
@@ -101,10 +118,6 @@ class Landmarks():
         frame_dic = {}
         frame_time_dic ={}
         frame_i = 0
-        if(self.path_to_predictor == "shape_predictor_68_face_landmarks.dat"):
-            det_str = "68_landmarks"
-        else:
-            det_str = "5_landmarks"
         start_video_time = time.time()
         for frame in frame_gen:
             start_frame_time = time.time()
@@ -119,16 +132,33 @@ class Landmarks():
         frame_time_dic['finish_video_time'] = finish_video_time
         return frame_dic,frame_time_dic
 
+    def perform_landmark_for_gen_without_time_frame(self,frame_gen):
+        frame_dic = {}
+        frame_time_dic ={}
+        frame_i = 0
+        start_video_time = time.time()
+        for frame in frame_gen:
+            frame_dic[frame_i] = self.perfrom_landmark_for_img(frame)
+            frame_i += 1
+        end_video_time = time.time()
+        finish_video_time = end_video_time - start_video_time
+        frame_time_dic['finish_video_time'] = finish_video_time
+        return frame_dic,frame_time_dic
 
     def perfrom_landmark_for_img(self,img):
         return self.landmarks_classifier.calc_lm_ls_for_img(img,self.flag_shape)
 
-    def perform_landmark_on_videos(self):
+    def perform_landmark_on_videos(self, without_time_frame = TRUE):
         video_results={}
         video_time_results ={}
         dic_keys = list(self.vl_dic.keys())[:self.number_of_videos]
-        for video in dic_keys:
-            video_results[video],video_time_results[video]  = self.perform_landmark_for_gen(self.vl_dic[video])
+        if not without_time_frame:
+            for video in dic_keys:
+                video_results[video],video_time_results[video]  = self.perform_landmark_for_gen(self.vl_dic[video])
+        else:
+            for video in dic_keys:
+                video_results[video],video_time_results[video]  = self.perform_landmark_for_gen_without_time_frame(self.vl_dic[video])
+
         return video_results, video_time_results
 
     def write_the_results(self):
