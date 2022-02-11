@@ -71,9 +71,10 @@ class FaceClassifier():
         rects = self.detector(grey_img, 0)
 
         shape = []
-        for (i, rect) in enumerate(rects):
-              shape.append(self.shape_to_np(self.predictor(grey_img, rect)))
+        
         if(flag_shape):
+            for (i, rect) in enumerate(rects):
+              shape.append(self.shape_to_np(self.predictor(grey_img, rect)))
             return shape
         else: 
             return rects
