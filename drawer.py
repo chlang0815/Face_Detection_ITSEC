@@ -52,6 +52,8 @@ class Drawer():
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+
+
 class HaarCascadeDrawer(Drawer):
     
     def __init__(self,result_dic, color = (0,0,255)) -> None:
@@ -86,7 +88,6 @@ class HaarCascadeDrawer(Drawer):
         """
         result_ls = self.return_result_for_video_and_frame(rel_path_to_video, frame)
         bb_img = img.copy()
-        print("IMG_shape:",img.shape)
         for x, y, w, h in result_ls:
             bb_img = cv2.rectangle(bb_img, (x, y),( x + w, y + h), self.color)
             bb_img = cv2.putText(bb_img,f"[{x},{y},{w},{h}]",org = ((x, y + h + 20)),fontFace=self.font, fontScale =self.fontScale,color = self.color)
@@ -110,6 +111,7 @@ class LandmarkDrawer(Drawer):
         self.fontScale =0.75
         self.font =cv2.FONT_HERSHEY_SIMPLEX
         self.flag_shape = flag_shape
+
     def draw_bounding_box_to_img(self, rel_path_to_video, frame, img):
         """Draws a bouning to the image and returns it.
 
@@ -128,13 +130,12 @@ class LandmarkDrawer(Drawer):
         result_ls = self.return_result_for_video_and_frame(rel_path_to_video, frame)
        
         bb_img = img.copy() 
-        print("IMG_shape:",img.shape)
+
         if (self.flag_shape):    
             for face in result_ls:
                 for point in face:
-                    bb_img = cv2.circle(bb_img, point, 2, self.color, 1)
+                    bb_img = cv2.circle(bb_img, point, 4, self.color, 1)
         else:
-            print(result_ls)
             for point in result_ls:
                 x = point.left()
                 y = point.top()
@@ -144,3 +145,4 @@ class LandmarkDrawer(Drawer):
                 bb_img = cv2.putText(bb_img,f"({x,y}),({x_2},{y_2}))",org = ((x, y_2+ 20)),fontFace=self.font, fontScale =self.fontScale,color = self.color)
         return bb_img
 
+    

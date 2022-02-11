@@ -42,6 +42,7 @@ class ResultWriter():
                 for result in result_ls:
                     rdw.write(f"{result}\n")
         rdw.close()
+        
     def write_down_the_time_dic(self,time_dictonary):
         write_path = Path.joinpath(self.rel_path_to_results,'result_time_dictonary.txt')
         rdw = open(write_path,"a+")
@@ -107,6 +108,7 @@ class ResultWriter():
             hf.close()
         nhf.close()
         ef.close()
+        
     def write_results_to_path(self, dictonary,result_dic_bool=False):
         """Calls all the write functions.
 
